@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải Captcha Kiếm Tiền</title>
+</head>
+<body>
+
+    <h2>🔥 Giải Captcha Để Tiếp Tục 🔥</h2>
+    <div id="captchaContainer"></div>
+    <button onclick="loadCaptcha()">Bắt đầu</button>
+
+    <script>
+        async function loadCaptcha() {
+            let apiKey = "YOUR_2CAPTCHA_API_KEY"; // Thay bằng API Key của bro
+            let response = await fetch(`https://2captcha.com/in.php?key=${apiKey}&method=userrecaptcha&googlekey=6Lc_xxx&pageurl=https://yourgithubpage.github.io`);
+            let text = await response.text();
+            
+            if (text.startsWith("OK|")) {
+                let captchaId = text.split("|")[1];
+
+                let interval = setInterval(async () => {
+                    let res = await fetch(`https://2captcha.com/res.php?key=${apiKey}&action=get&id=${captchaId}`);
+                    let result = await res.text();
+
+                    if (result.startsWith("OK|")) {
+                        clearInterval(interval);
+                        alert("✅ CAPTCHA giải thành công! Bạn đã giúp kiếm tiền.");
+                    }
+                }, 5000);
+            } else {
+                console.error("Lỗi khi gửi captcha:", text);
+            }
+        }
+    </script>
+
+</body>
+</html>
