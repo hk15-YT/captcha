@@ -8,29 +8,39 @@
 <body>
 
     <h2>🔥 Giải Captcha Để Tiếp Tục 🔥</h2>
-    <div id="captchaContainer"></div>
     <button onclick="loadCaptcha()">Bắt đầu</button>
 
     <script>
         async function loadCaptcha() {
-            let apiKey = "YOUR_2CAPTCHA_API_KEY"; // Thay bằng API Key của bro
-            let response = await fetch(`https://2captcha.com/in.php?key=${apiKey}&method=userrecaptcha&googlekey=6Lc_xxx&pageurl=https://yourgithubpage.github.io`);
+            let apiKey = "2612a8185874bd951ee87bd06e309bd0"; // API Key của bro
+            let googleKey = "6Lc_xxx"; // Thay bằng Google reCAPTCHA key hợp lệ
+            let pageUrl = "https://yourgithubpage.github.io";
+
+            let response = await fetch(`https://2captcha.com/in.php?key=${apiKey}&method=userrecaptcha&googlekey=${googleKey}&pageurl=${pageUrl}`);
             let text = await response.text();
-            
+
             if (text.startsWith("OK|")) {
                 let captchaId = text.split("|")[1];
+                console.log("Captcha ID:", captchaId);
 
                 let interval = setInterval(async () => {
                     let res = await fetch(`https://2captcha.com/res.php?key=${apiKey}&action=get&id=${captchaId}`);
                     let result = await res.text();
 
+                    console.log("Captcha Response:", result);
+
                     if (result.startsWith("OK|")) {
                         clearInterval(interval);
                         alert("✅ CAPTCHA giải thành công! Bạn đã giúp kiếm tiền.");
+                    } else if (result === "CAPCHA_NOT_READY") {
+                        console.log("Captcha chưa sẵn sàng, tiếp tục chờ...");
+                    } else {
+                        clearInterval(interval);
+                        alert("❌ Lỗi khi giải captcha: " + result);
                     }
                 }, 5000);
             } else {
-                console.error("Lỗi khi gửi captcha:", text);
+                alert("❌ Lỗi khi gửi captcha: " + text);
             }
         }
     </script>
